@@ -1,0 +1,148 @@
+﻿<Window
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:themes="clr-namespace:Microsoft.Windows.Themes;assembly=PresentationFramework.Aero"
+    xmlns:termdictionary="clr-namespace:termdictionary"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+    mc:Ignorable="d" 
+    x:Class="termdictionary.MainWindow"
+    Title="Dict"  
+    Background="{x:Null}"  
+    Width="400" 
+    Height="520" 
+    Activated="Window_Activated" WindowStyle="ThreeDBorderWindow" >
+
+    <Window.Resources>
+        <Style x:Key="MyDataGridColumnHeaderStyle" TargetType="{x:Type DataGridColumnHeader}">
+            <EventSetter Event="Click" Handler="DataGridHeader_Click"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type DataGridColumnHeader}">
+
+                        <Grid>
+
+                            <themes:DataGridHeaderBorder BorderBrush="{TemplateBinding BorderBrush}" 
+                                                         Background="{TemplateBinding Background}" 
+                                                         IsClickable="{TemplateBinding CanUserSort}" 
+                                                         IsPressed="{TemplateBinding IsPressed}" 
+                                                         IsHovered="{TemplateBinding IsMouseOver}" 
+                                                         SortDirection="{TemplateBinding SortDirection}" 
+                                                         SeparatorBrush="{TemplateBinding SeparatorBrush}" 
+                                                         SeparatorVisibility="{TemplateBinding SeparatorVisibility}" >
+
+                                <Label  ContentTemplate="{TemplateBinding ContentTemplate}"
+                                       Content="{TemplateBinding Content}"
+                                       ContentStringFormat="{TemplateBinding ContentStringFormat}"
+                                       HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                       SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" 
+                                       VerticalAlignment="{TemplateBinding VerticalContentAlignment}" 
+                                       Foreground="Black" 
+                                       FontWeight="Bold" 
+                                       FontSize="14" Padding="5,-2" />
+
+
+                            </themes:DataGridHeaderBorder>
+                            <Thumb x:Name="PART_LeftHeaderGripper" HorizontalAlignment="Left">
+                                <Thumb.Style>
+                                    <Style TargetType="{x:Type Thumb}">
+                                        <Setter Property="Width" Value="8"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Cursor" Value="SizeWE"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Thumb.Style>
+                            </Thumb>
+                            <Thumb x:Name="PART_RightHeaderGripper" HorizontalAlignment="Right">
+                                <Thumb.Style>
+                                    <Style TargetType="{x:Type Thumb}">
+                                        <Setter Property="Width" Value="8"/>
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Cursor" Value="SizeWE"/>
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="{x:Type Thumb}">
+                                                    <Border Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}"/>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Thumb.Style>
+                            </Thumb>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition  />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBox x:Name="SearchText" VerticalAlignment="Top" MaxHeight="23" VerticalScrollBarVisibility="Disabled" Margin="2,2,5,10" TextChanged="SearchText_TextChanged" MouseDoubleClick="SearchText_MouseDoubleClick" HorizontalScrollBarVisibility="Disabled" ToolTip="Двойной клик -&gt; Очистить &#xD;&#xA;Переключение на это окно -&gt; Вставить из буфера"   />
+        <StackPanel Grid.Row="0" Grid.Column="1" Orientation="Vertical">
+            <Button x:Name="Button" Content="X" HorizontalAlignment="Left" VerticalAlignment="Top" Width="{Binding ActualHeight, ElementName=Button, Mode=OneWay}" Margin="2" Click="Xbutton_Click" />
+            <Expander Header="Опции" Background="{x:Null}" BorderBrush="{x:Null}">
+                <Expander.Foreground>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.ActiveBorderColorKey}}"/>
+                </Expander.Foreground>
+                <StackPanel>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" Content="Открыть словарь" Margin="10,5" Click="ButtonOpenDictionary_Click"  />
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Center" Content="Открыть словарь&#xA;в формате TXT" Margin="10,5" Click="ButtonOpenTXTFile_Click"   />
+                </StackPanel>
+            </Expander>
+
+        </StackPanel>
+
+        <DataGrid  
+            x:Name="VocabData" 
+            Grid.Column="0" 
+            Grid.Row="1" 
+			Grid.ColumnSpan="2"
+			SizeChanged="VocabData_SizeChanged" 
+			MaxHeight="600" 
+			CanUserReorderColumns="False" 
+			CanUserSortColumns="False" 
+			AlternationCount="2" 
+			AlternatingRowBackground="#FF272727" 
+			Foreground="White" 
+			RowBackground="Black" 
+			Background="{x:Null}" 
+			HeadersVisibility="Column" 
+            HorizontalScrollBarVisibility="Disabled" 
+            AutoGenerateColumns="False" 
+            ColumnHeaderStyle="{DynamicResource MyDataGridColumnHeaderStyle}"  
+            CellEditEnding="VocabData_CellEditEnding" KeyUp="VocabData_KeyUp" >
+            <DataGrid.Columns>
+                <DataGridTextColumn  Header="English" Binding="{Binding (termdictionary:Ent.Eng)}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+                <DataGridTextColumn Header="Русский" Binding="{Binding (termdictionary:Ent.Rus)}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style>
+                            <Setter Property="TextBlock.TextWrapping" Value="Wrap" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+
+    </Grid>
+</Window>
